@@ -1,13 +1,35 @@
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import React, { useLayoutEffect } from "react";
-import { useNavigation } from "@react-navigation/native";
-import SigInComponent from "../components/Home Page/SigIn.component";
-import FaceBook from "../assets/image/facebook.png";
-import Google from "../assets/image/google.png";
-import Apple from "../assets/image/apple.png";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import axios from "axios";
+import { useContext } from "react";
+import { SpotifyContext } from "../context/SpotifyContext";
+import Header from "../components/Home Page/Header";
 const HomeScreen = () => {
   const navigation = useNavigation();
+  const { token } = useContext(SpotifyContext);
   // ! for header navigation
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (token) {
+      axios("https://api.spotify.com/v1/me", {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      })
+        .then((response) => {
+          setUser(response.data);
+        })
+        .catch((error) => {
+          console.log("error", error.message);
+        });
+    }
+  }, []);
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
@@ -15,7 +37,10 @@ const HomeScreen = () => {
   }, [navigation]);
 
   return (
-    <SafeAreaView className="w-full flex-1 justify-evenly bg-black"></SafeAreaView>
+    <SafeAreaView className="w-full flex-1  bg-black">
+      {/* Header */}
+      <Header />
+    </SafeAreaView>
   );
 };
 

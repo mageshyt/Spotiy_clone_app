@@ -1,12 +1,16 @@
-import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
-import  { useLayoutEffect } from "react";
+import { Image, Text, View, TouchableOpacity } from "react-native";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import SigInComponent from "../components/Home Page/SigIn.component";
+import SigInComponent from "../components/Login Page/SigIn.component";
 import FaceBook from "../assets/image/facebook.png";
 import Google from "../assets/image/google.png";
 import Apple from "../assets/image/apple.png";
+import { ResponseType, useAuthRequest } from "expo-auth-session";
+import { useContext } from "react";
+import { SpotifyContext } from "../context/SpotifyContext";
 const LoginScreen = () => {
   const navigation = useNavigation();
+  const { setToken } = useContext(SpotifyContext);
   // ! for header navigation
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -14,8 +18,41 @@ const LoginScreen = () => {
     });
   }, [navigation]);
 
+  const discovery = {
+    authorizationEndpoint: "https://accounts.spotify.com/authorize",
+    tokenEndpoint: "https://accounts.spotify.com/api/token",
+  };
+  const [request, response, promptAsync] = useAuthRequest(
+    {
+      responseType: ResponseType.Token,
+      clientId: "06c8d1ff40d54085ad2e85533f513e47",
+      scopes: [
+        "user-read-currently-playing",
+        "user-read-recently-played",
+        "user-read-playback-state",
+        "user-top-read",
+        "user-modify-playback-state",
+        "streaming",
+        "user-read-email",
+        "user-read-private",
+      ],
+      // In order to follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
+      // this must be set to false
+      usePKCE: false,
+      redirectUri: "exp://127.0.0.1:19000/",
+    },
+    discovery
+  );
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { access_token } = response.params;
+      setToken(access_token);
+      navigation.navigate("Home");
+    }
+  }, [response]);
+
   return (
-    <SafeAreaView className="w-full flex-1 justify-evenly bg-black">
+    <View className="flex-1  justify-evenly  bg-black">
       <View className=" flex mt-4  items-center">
         <Image
           source={require("../assets/image/logo.png")}
@@ -26,12 +63,17 @@ const LoginScreen = () => {
       <View className="px-6">
         <Text className="text-4xl text-white font-bold">Sign in</Text>
       </View>
+
       <SigInComponent />
+
       {/* Button */}
       <View className="px-6">
-        <View className="bg-[#1ED760]  rounded-2xl p-6">
+        <TouchableOpacity
+          onPress={() => promptAsync()}
+          className="bg-[#1ED760]  rounded-2xl p-6"
+        >
           <Text className="text-center font-medium text-[20px]">Sign In</Text>
-        </View>
+        </TouchableOpacity>
       </View>
       {/* Divider */}
       <View className="px-6 flex-row space-x-2  items-center">
@@ -44,7 +86,9 @@ const LoginScreen = () => {
       {/* Social Media signIn */}
       <View className="flex-row items-center justify-center  ">
         <SocialIcon Icons={FaceBook} />
+
         <SocialIcon Icons={Google} />
+
         <SocialIcon Icons={Apple} />
       </View>
       {/* Sign up */}
@@ -53,7 +97,7 @@ const LoginScreen = () => {
           Don't you have an account? Sign up now.
         </Text>
       </View>
-    </SafeAreaView>
+    </View>
   );
 };
 

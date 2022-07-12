@@ -1,18 +1,19 @@
-import { View, Text, TextInput } from "react-native";
-import React from "react";
+import { View, Text, TextInput, KeyboardAvoidingView } from "react-native";
 
 const CustomInputComponent = ({ Icon, placeholder, title }) => {
   return (
     <View className="px-6 mb-3 space-y-3">
       <Text className="text-md text-gray-200  font-medium">{title}</Text>
       {/* Input*/}
-      <View className="p-4 rounded-lg flex-row space-x-2  bg-[#2D2D2D]">
+      <View className="rounded-lg flex-row space-x-2 items-center px-3  bg-[#2D2D2D]">
         <Icon color="white" />
+
         <TextInput
-          keyboardType="default"
+          keyboardType="visible-password"
           placeholder={placeholder}
-          className="  text-white outline-none border-none "
+          className="  text-white p-4 w-full  outline-none border-none "
           placeholderTextColor="#fff"
+          secureTextEntry={title === "password"}
         />
       </View>
     </View>
