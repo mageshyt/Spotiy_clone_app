@@ -1,45 +1,48 @@
-import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, View } from "react-native";
 import React, { useEffect, useLayoutEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import axios from "axios";
 import { useContext } from "react";
 import { SpotifyContext } from "../context/SpotifyContext";
-import Header from "../components/Home Page/Header";
+import Header from "../components/Home Page/Header/Header";
+
+import PlayList from "../components/Home Page/Playlists/PlayList";
+import MediumCard from "../components/Home Page/Playlists/MediumCard";
+import Feed from "../components/Home Page/Feed/Feed";
 const HomeScreen = () => {
   const navigation = useNavigation();
-  const { token } = useContext(SpotifyContext);
+  const { token, user, playList, category, FeaturedPlaylists } =
+    useContext(SpotifyContext);
   // ! for header navigation
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    if (token) {
-      axios("https://api.spotify.com/v1/me", {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-      })
-        .then((response) => {
-          setUser(response.data);
-        })
-        .catch((error) => {
-          console.log("error", error.message);
-        });
-    }
-  }, []);
-
+  // console.log("token", token);
   useLayoutEffect(() => {
     navigation.setOptions({
       headerShown: false,
     });
   }, [navigation]);
+  // console.log(FeaturedPlaylists);
+  // FeaturedPlaylists?.playlists?.items?.map((item, index) => {});
 
   return (
-    <SafeAreaView className="w-full flex-1  bg-black">
+    <SafeAreaView className="w-full flex-1 space-y-6   bg-black">
       {/* Header */}
-      <Header />
+      <Header user={user} />
+      {/* Playlist */}
+      <ScrollView className="p-4 flex-1  ">
+        <PlayList playList_title="Your playlist" playlist={playList} />
+        <PlayList
+          playList_title="Category"
+          playlist={category?.categories?.items}
+        />
+        <MediumCard
+          playList_title="Editor's picks"
+          playList={FeaturedPlaylists?.playlists?.items}
+        />
+      </ScrollView>
+
+      <View>
+        <Feed />
+      </View>
     </SafeAreaView>
   );
 };

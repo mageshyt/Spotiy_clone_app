@@ -8,9 +8,10 @@ import Apple from "../assets/image/apple.png";
 import { ResponseType, useAuthRequest } from "expo-auth-session";
 import { useContext } from "react";
 import { SpotifyContext } from "../context/SpotifyContext";
+import spotifyApi from "../lib/spotify";
 const LoginScreen = () => {
   const navigation = useNavigation();
-  const { setToken } = useContext(SpotifyContext);
+  const { setToken, setUserId } = useContext(SpotifyContext);
   // ! for header navigation
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -25,7 +26,7 @@ const LoginScreen = () => {
   const [request, response, promptAsync] = useAuthRequest(
     {
       responseType: ResponseType.Token,
-      clientId: "06c8d1ff40d54085ad2e85533f513e47",
+      clientId: process.env.APP_CLINT_ID,
       scopes: [
         "user-read-currently-playing",
         "user-read-recently-played",
@@ -36,8 +37,6 @@ const LoginScreen = () => {
         "user-read-email",
         "user-read-private",
       ],
-      // In order to follow the "Authorization Code Flow" to fetch token after authorizationEndpoint
-      // this must be set to false
       usePKCE: false,
       redirectUri: "exp://127.0.0.1:19000/",
     },
@@ -47,6 +46,8 @@ const LoginScreen = () => {
     if (response?.type === "success") {
       const { access_token } = response.params;
       setToken(access_token);
+  
+      spotifyApi.setAccessToken(access_token);
       navigation.navigate("Home");
     }
   }, [response]);
