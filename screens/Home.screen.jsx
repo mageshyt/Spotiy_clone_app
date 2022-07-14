@@ -14,15 +14,7 @@ const HomeScreen = () => {
   const { token, user, playList, category, FeaturedPlaylists } =
     useContext(SpotifyContext);
   // ! for header navigation
-  // console.log("token", token);
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, [navigation]);
-  // console.log(FeaturedPlaylists);
-  // FeaturedPlaylists?.playlists?.items?.map((item, index) => {});
-
+  console.log("token", token);
   return (
     <SafeAreaView className="w-full flex-1 space-y-6   bg-black">
       {/* Header */}

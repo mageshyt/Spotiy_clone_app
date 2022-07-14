@@ -12,12 +12,6 @@ import spotifyApi from "../lib/spotify";
 const LoginScreen = () => {
   const navigation = useNavigation();
   const { setToken, setUserId } = useContext(SpotifyContext);
-  // ! for header navigation
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerShown: false,
-    });
-  }, [navigation]);
 
   const discovery = {
     authorizationEndpoint: "https://accounts.spotify.com/authorize",
@@ -46,7 +40,7 @@ const LoginScreen = () => {
     if (response?.type === "success") {
       const { access_token } = response.params;
       setToken(access_token);
-  
+
       spotifyApi.setAccessToken(access_token);
       navigation.navigate("Home");
     }
@@ -77,7 +71,7 @@ const LoginScreen = () => {
         </TouchableOpacity>
       </View>
       {/* Divider */}
-      <View className="px-6 flex-row space-x-2  items-center">
+      <View className="px-6 flex-row space-x-2 justify-center  items-center">
         <View className=" border-b w-[35%] border-white" />
         <View>
           <Text className=" text-white font-medium">or Sign in with</Text>

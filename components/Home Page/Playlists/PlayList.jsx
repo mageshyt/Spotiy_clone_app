@@ -1,7 +1,9 @@
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const PlayList = ({ playList_title, playlist }) => {
+  const navigation = useNavigation();
   return (
     <View className="  space-y-3 pb-2 ">
       <Text className="text-3xl font-bold text-gray-300">{playList_title}</Text>
@@ -14,8 +16,13 @@ const PlayList = ({ playList_title, playlist }) => {
             image = item?.images[0]?.url;
           }
           return (
-            <View
+            <TouchableOpacity
               key={index}
+              onPress={() => {
+                if (playList_title != "Category") {
+                  navigation.navigate("playlist", { playlist: item });
+                }
+              }}
               className=" space-y-2 justify-center items-center w-[100px] rounded-xl "
             >
               <Image
@@ -31,7 +38,7 @@ const PlayList = ({ playList_title, playlist }) => {
                   {item?.owner?.display_name}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         })}
       </ScrollView>
