@@ -1,6 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Image, ScrollView, View, Text, TouchableOpacity } from "react-native";
+import * as Animatable from "react-native-animatable";
 
 const MediumCard = ({ playList_title, playList }) => {
   const navigation = useNavigation();
@@ -18,7 +19,9 @@ const MediumCard = ({ playList_title, playList }) => {
               }
               className=" space-y-2 pb-2 justify-center items-center w-[120px] rounded-xl "
             >
-              <Image
+              <Animatable.Image
+                animation={"zoomIn"}
+                delay={index * 100 + 500}
                 source={{ uri: image }}
                 className="h-[120px] w-[120px] rounded-xl "
               />

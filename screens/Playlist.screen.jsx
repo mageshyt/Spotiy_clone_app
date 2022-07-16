@@ -51,7 +51,7 @@ const PlaylistScreen = () => {
         </TouchableOpacity>
         {/* top session with image  */}
         <Animatable.View
-          animation="slideInLeft"
+          animation="fadeInLeft"
           delay={500}
           className="mt-10 flex-row space-x-4"
         >
@@ -62,7 +62,7 @@ const PlaylistScreen = () => {
           <InfoCard total={tracks?.total} name={name} />
         </Animatable.View>
         {/* split */}
-        <View className=" border-b   border-white w-[90%] mt-4" />
+        <View className=" border-b mt-4  border-white w-[90%] " />
         <ScrollView
           showsVerticalScrollIndicator={false}
           className="w-full   p-4"
@@ -71,7 +71,7 @@ const PlaylistScreen = () => {
             {songs?.map((item, idx) => {
               return (
                 <SongCard
-                 delay={idx*100}
+                  delay={idx * 100 + 500}
                   setplaying={setplaying}
                   track={item.track}
                   key={idx}
@@ -81,7 +81,7 @@ const PlaylistScreen = () => {
           </View>
         </ScrollView>
       </LinearGradient>
-      <View className="px-5 items-center mb-2">
+      <View className="px-5 items-center ">
         {playing && <ActiveSong playing={playing} />}
       </View>
       {/* <Feed /> */}

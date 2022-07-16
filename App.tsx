@@ -5,6 +5,7 @@ import HomeScreen from "./screens/Home.screen";
 import LoginScreen from "./screens/Login.screen";
 import { SpotifyProvider } from "./context/SpotifyContext.js";
 import PlaylistScreen from "./screens/Playlist.screen";
+import SongScreen from "./screens/Song.screen";
 
 const stack = createNativeStackNavigator();
 
@@ -28,6 +29,15 @@ export default function App() {
               name="playlist"
               options={{ headerShown: false }}
               component={PlaylistScreen}
+            />
+            <stack.Screen
+              name="song"
+              options={{
+                headerShown: false,
+                animationDuration: 500,
+                presentation: "fullScreenModal",
+              }}
+              component={SongScreen}
             />
           </stack.Navigator>
         </NavigationContainer>

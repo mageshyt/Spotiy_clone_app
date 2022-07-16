@@ -28,7 +28,7 @@ const PlayList = ({ playList_title, playlist }) => {
             >
               <Animatable.Image
                 animation={"zoomIn"}
-                delay={index * 100}
+                delay={index * 100 + 500}
                 source={{ uri: image }}
                 className="h-[90px] w-20 rounded-xl "
               />
