@@ -6,7 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import spotifyApi from "../lib/spotify";
 import { LinearGradient } from "expo-linear-gradient";
@@ -21,37 +21,26 @@ import {
   ArrowCircleLeftIcon,
   ArrowLeftIcon,
 } from "react-native-heroicons/outline";
+import { useSongs } from "../hooks/FetchSongs";
+import ActiveSong from "../components/playlist songs/ActiveSong";
+import Feed from "../components/Home Page/Feed/Feed";
+import * as Animatable from "react-native-animatable";
+
 const PlaylistScreen = () => {
   const {
     params: { playlist },
   } = useRoute();
   const navigation = useNavigation();
-  const [songs, setSongs] = React.useState([]);
-  useEffect(() => {
-    const fetch = async () => {
-      const result = spotifyApi
-        .getPlaylistTracks(playlist.id, {
-          limit: 50,
-          offset: 0,
-        })
-        .then((response) => {
-          setSongs(response.items);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      //   spotifyApi.play()
-    };
-    fetch();
-  }, []);
 
+  const [playing, setplaying] = useState();
+
+  const songs = useSongs(playlist?.id);
   const { name, owner, images, tracks } = playlist;
-
   return (
-    <View className=" bg-[#121212] flex-1">
+    <View className=" bg-[#121212]  flex-1">
       <LinearGradient
         colors={["#121212", "black"]}
-        className=" items-center flex-1 mt-10  relative justify-around"
+        className=" items-center flex-1 mt-6 relative justify-around"
       >
         {/* back button */}
         <TouchableOpacity
@@ -61,24 +50,41 @@ const PlaylistScreen = () => {
           <ArrowLeftIcon color="white" size={25} />
         </TouchableOpacity>
         {/* top session with image  */}
-        <View className="mt-10 flex-row space-x-4">
+        <Animatable.View
+          animation="slideInLeft"
+          delay={500}
+          className="mt-10 flex-row space-x-4"
+        >
           <Image
             source={{ url: images[0]?.url }}
             className="h-[120px] rounded-xl w-[120px]"
           />
           <InfoCard total={tracks?.total} name={name} />
-        </View>
+        </Animatable.View>
         {/* split */}
-        <View className=" border-b border-white w-[90%] mt-4" />
+        <View className=" border-b   border-white w-[90%] mt-4" />
         <ScrollView
-          showsHorizontalScrollIndicator={false}
-          className="w-full p-4"
+          showsVerticalScrollIndicator={false}
+          className="w-full   p-4"
         >
-          {songs?.map((item, idx) => {
-            return <SongCard track={item.track} key={idx} />;
-          })}
+          <View className="pb-[80px]">
+            {songs?.map((item, idx) => {
+              return (
+                <SongCard
+                 delay={idx*100}
+                  setplaying={setplaying}
+                  track={item.track}
+                  key={idx}
+                />
+              );
+            })}
+          </View>
         </ScrollView>
       </LinearGradient>
+      <View className="px-5 items-center mb-2">
+        {playing && <ActiveSong playing={playing} />}
+      </View>
+      {/* <Feed /> */}
     </View>
   );
 };

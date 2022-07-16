@@ -1,11 +1,12 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
+import * as Animatable from "react-native-animatable";
 
 const PlayList = ({ playList_title, playlist }) => {
   const navigation = useNavigation();
   return (
-    <View className="  space-y-3 pb-2 ">
+    <View animation={"fadeIn"} delay={1100} className="  space-y-3 pb-2 ">
       <Text className="text-3xl font-bold text-gray-300">{playList_title}</Text>
       <ScrollView horizontal>
         {playlist?.map((item, index) => {
@@ -25,7 +26,9 @@ const PlayList = ({ playList_title, playlist }) => {
               }}
               className=" space-y-2 justify-center items-center w-[100px] rounded-xl "
             >
-              <Image
+              <Animatable.Image
+                animation={"zoomIn"}
+                delay={index * 100}
                 source={{ uri: image }}
                 className="h-[90px] w-20 rounded-xl "
               />

@@ -9,6 +9,8 @@ import { ResponseType, useAuthRequest } from "expo-auth-session";
 import { useContext } from "react";
 import { SpotifyContext } from "../context/SpotifyContext";
 import spotifyApi from "../lib/spotify";
+import authHandler from "../lib/auth";
+import { SpotifyAuth, Scopes } from "react-spotify-auth";
 const LoginScreen = () => {
   const navigation = useNavigation();
   const { setToken, setUserId } = useContext(SpotifyContext);
@@ -17,10 +19,12 @@ const LoginScreen = () => {
     authorizationEndpoint: "https://accounts.spotify.com/authorize",
     tokenEndpoint: "https://accounts.spotify.com/api/token",
   };
+
   const [request, response, promptAsync] = useAuthRequest(
     {
       responseType: ResponseType.Token,
       clientId: process.env.APP_CLINT_ID,
+      clientSecret: process.env.APP_CLINT_SECRET,
       scopes: [
         "user-read-currently-playing",
         "user-read-recently-played",
@@ -40,7 +44,6 @@ const LoginScreen = () => {
     if (response?.type === "success") {
       const { access_token } = response.params;
       setToken(access_token);
-
       spotifyApi.setAccessToken(access_token);
       navigation.navigate("Home");
     }
@@ -64,7 +67,9 @@ const LoginScreen = () => {
       {/* Button */}
       <View className="px-6">
         <TouchableOpacity
-          onPress={() => promptAsync()}
+          onPress={() => {
+            promptAsync();
+          }}
           className="bg-[#1ED760]  rounded-2xl p-6"
         >
           <Text className="text-center font-medium text-[20px]">Sign In</Text>

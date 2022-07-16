@@ -1,12 +1,22 @@
-import { View, Text, Image } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { DotsHorizontalIcon } from "react-native-heroicons/solid";
+import { millisecondsToMinutes } from "../../lib/tims";
+import * as Animatable from "react-native-animatable";
 
-const SongCard = ({ track }) => {
+const SongCard = ({ track, setplaying, delay }) => {
   return (
-    <View className="flex-row items-center justify-between pb-8">
+    <Animatable.View
+      iterationCount={1}
+      animation="fadeInRight"
+      className="flex-row items-center  pb-8"
+      delay={delay}
+    >
       {/* details */}
-      <View className=" flex-row items-center space-x-4">
+      <TouchableOpacity
+        onPress={() => setplaying(track)}
+        className=" flex-row items-center  flex-1  space-x-4"
+      >
         {/* Image */}
         <Image
           source={{ url: track.album.images[0].url }}
@@ -19,10 +29,11 @@ const SongCard = ({ track }) => {
           </Text>
           <Text className="text-gray-500">{track?.artists[0].name}</Text>
         </View>
-      </View>
+      </TouchableOpacity>
+
       {/* More Icons */}
       <DotsHorizontalIcon size={25} color="white" />
-    </View>
+    </Animatable.View>
   );
 };
 

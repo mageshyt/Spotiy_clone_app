@@ -11,6 +11,7 @@ export const SpotifyProvider = ({ children }) => {
   const [category, setCategory] = useState(null);
   const [user, setUser] = useState(null);
   const [FeaturedPlaylists, setFeaturedPlaylists] = useState(null);
+  const [device, setDevice] = useState(null);
   useEffect(() => {
     if (token) {
       if (spotifyApi.getAccessToken()) {
@@ -22,7 +23,6 @@ export const SpotifyProvider = ({ children }) => {
         spotifyApi.getUserPlaylists().then((data) => {
           setPlaylist(data.items);
         });
-
         //! get category
         spotifyApi.getCategories().then((data) => {
           setCategory(data);
@@ -31,11 +31,23 @@ export const SpotifyProvider = ({ children }) => {
         spotifyApi.getFeaturedPlaylists().then((data) => {
           setFeaturedPlaylists(data);
         });
+        //! get device
+        spotifyApi.getMyDevices().then((data) => {
+          setDevice(data);
+        });
       }
     }
   }, [token]);
 
-  value = { token, setToken, playList, category, user, FeaturedPlaylists };
+  value = {
+    token,
+    setToken,
+    playList,
+    category,
+    user,
+    FeaturedPlaylists,
+    device,
+  };
 
   return (
     <SpotifyContext.Provider value={value}>{children}</SpotifyContext.Provider>
