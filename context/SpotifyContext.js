@@ -12,6 +12,7 @@ export const SpotifyProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [FeaturedPlaylists, setFeaturedPlaylists] = useState(null);
   const [device, setDevice] = useState(null);
+  
   useEffect(() => {
     if (token) {
       if (spotifyApi.getAccessToken()) {

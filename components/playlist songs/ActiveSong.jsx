@@ -6,6 +6,7 @@ import { SpotifyContext } from "../../context/SpotifyContext";
 import { WifiIcon } from "react-native-heroicons/outline";
 import { PauseIcon, PlayIcon } from "react-native-heroicons/outline";
 import { useNavigation } from "@react-navigation/native";
+import spotifyApi from "../../lib/spotify";
 
 const ActiveSong = ({ playing }) => {
   const { device } = useContext(SpotifyContext);
@@ -15,6 +16,29 @@ const ActiveSong = ({ playing }) => {
   const [playingState, setPlayingState] = useState(true);
   const navigation = useNavigation();
 
+  //! to play the song
+  useEffect(() => {
+    const playSong = async () => {
+      spotifyApi
+        .play({
+          uris: [playing?.uri],
+          position_ms: 50000,
+        })
+        .then(() => {
+          console.log("playing: ");
+        });
+    };
+    playSong();
+  }, [playing]);
+  const playSong = async () => {
+    spotifyApi.getMyCurrentPlaybackState().then((res) => {
+      if (res.is_playing) {
+        spotifyApi.pause();
+      } else {
+        spotifyApi.play();
+      }
+    });
+  };
   return (
     <Animatable.View
       animation="slideInUp"
@@ -52,13 +76,19 @@ const ActiveSong = ({ playing }) => {
         <View>
           {playingState ? (
             <PauseIcon
-              onPress={() => setPlayingState(false)}
+              onPress={() => {
+                playSong();
+                setPlayingState(false);
+              }}
               color="white"
               size={35}
             />
           ) : (
             <PlayIcon
-              onPress={() => setPlayingState(true)}
+              onPress={() => {
+                setPlayingState(true);
+                playSong();
+              }}
               color="white"
               size={35}
             />
